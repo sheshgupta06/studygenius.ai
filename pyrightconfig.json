@@ -1,0 +1,32 @@
+{
+  "reportMissingImports": "none",
+  "reportMissingModuleSource": "none",
+  "reportUndefinedVariable": "none",
+  "reportAttributeAccessIssue": "none",
+  "typeCheckingMode": "off",
+  "pythonVersion": "3.11",
+  "exclude": [
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.git",
+    "**/.git/**",
+    "**/.hg",
+    "**/.hg/**",
+    "**/.svn",
+    "**/.svn/**",
+    "**/.tox",
+    "**/.tox/**",
+    "**/.venv",
+    "**/.venv/**",
+    "**/.env",
+    "**/env",
+    "**/env/**",
+    "**/venv",
+    "**/venv/**",
+    "**/build",
+    "**/build/**",
+    "**/dist",
+    "**/dist/**",
+    "**/site-packages"
+  ]
+}

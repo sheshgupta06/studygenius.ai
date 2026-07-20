@@ -1,0 +1,24 @@
+import { lazy } from "react";
+
+export const LandingPage = lazy(() => import("@/pages/LandingPage"));
+export const SignInPage = lazy(() => import("@/pages/auth/SignInPage"));
+export const SignUpPage = lazy(() => import("@/pages/auth/SignUpPage"));
+export const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
+export const DocumentsPage = lazy(() => import("@/pages/DocumentsPage"));
+export const DocumentLayout = lazy(() => import("@/pages/document/DocumentLayout"));
+export const ChatPage = lazy(() => import("@/pages/document/ChatPage"));
+export const NotesPage = lazy(() => import("@/pages/document/NotesPage"));
+export const SummaryPage = lazy(() => import("@/pages/document/SummaryPage"));
+export const QuizPage = lazy(() => import("@/pages/document/QuizPage"));
+export const FlashcardsPage = lazy(() => import("@/pages/document/FlashcardsPage"));
+export const HistoryPage = lazy(() => import("@/pages/HistoryPage"));
+export const ProfilePage = lazy(() => import("@/pages/ProfilePage"));
+export const SettingsPage = lazy(() => import("@/pages/SettingsPage"));
+export const NotFoundPage = lazy(() => import("@/pages/NotFoundPage"));
+export const DashboardLayout = lazy(() => import("@/layouts/DashboardLayout"));
+export const AboutPage = lazy(() => import("@/pages/public/AboutPage"));
+export const FeaturesPage = lazy(() => import("@/pages/public/FeaturesPage"));
+export const PricingPage = lazy(() => import("@/pages/public/PricingPage"));
+export const ContactPage = lazy(() => import("@/pages/public/ContactPage"));
+export const ForgotPasswordPage = lazy(() => import("@/pages/auth/ForgotPasswordPage"));
+export const UploadPage = lazy(() => import("@/pages/UploadPage"));

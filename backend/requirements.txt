@@ -1,0 +1,48 @@
+# StudyGenius AI — FastAPI Backend Requirements (Pinned)
+
+# ── Framework ─────────────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+aiofiles==23.2.1
+python-multipart==0.0.9
+
+# ── Settings & Validation ─────────────────────────────────────────────────────
+pydantic>=2.9.0
+pydantic-settings>=2.5.2
+
+# ── Authentication ────────────────────────────────────────────────────────────
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# ── Database ──────────────────────────────────────────────────────────────────
+sqlalchemy[asyncio]==2.0.31
+asyncpg>=0.30.0
+alembic==1.13.2
+
+# ── Vector Store ─────────────────────────────────────────────────────────────
+chromadb==0.5.3
+
+# ── AWS S3 ────────────────────────────────────────────────────────────────────
+boto3==1.34.144
+botocore==1.34.144
+
+# ── PDF Processing ────────────────────────────────────────────────────────────
+pdfplumber==0.11.1
+PyPDF2==3.0.1
+
+# ── LangChain ─────────────────────────────────────────────────────────────────
+langchain==0.2.12
+langchain-text-splitters==0.2.2
+
+# ── Google Generative AI ──────────────────────────────────────────────────────
+google-genai>=0.2.0
+openai>=0.28.0
+
+# ── HTTP & Forms ──────────────────────────────────────────────────────────────
+httpx>=0.28.1
+python-multipart==0.0.9
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+python-dotenv==1.0.1
+
+slowapi==0.1.9
