@@ -1,5 +1,7 @@
 # StudyGenius AI - AI Titans
 
+🚀 **Live Demo:** [http://52.66.250.71/](http://52.66.250.71/)
+
 Welcome to **StudyGenius AI**, a premium, production-ready SaaS application that transforms dense PDF documents into interactive, intelligent learning experiences using Large Language Models and Retrieval-Augmented Generation (RAG).
 
 ## Overview
