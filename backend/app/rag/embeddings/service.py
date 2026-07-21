@@ -65,28 +65,37 @@ class EmbeddingsService:
         cleaned_texts = [t.strip().replace("\n", " ") for t in texts]
         all_embeddings: list[list[float]] = []
 
+        import asyncio
         for i in range(0, len(cleaned_texts), self.batch_size):
             batch = cleaned_texts[i : i + self.batch_size]
             logger.info(f"Embedding batch {i // self.batch_size + 1} ({len(batch)} texts)")
 
-            try:
-                if self.provider == "openai":
-                    response = await openai.Embedding.acreate(
-                        model=self.model,
-                        input=batch,
-                    )
-                    all_embeddings.extend([item.embedding for item in response.data])
-                else:
-                    response = self.client.models.embed_content(
-                        model=self.model,
-                        contents=batch,
-                        config=genai_types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
-                    )
-                    all_embeddings.extend([emb.values for emb in response.embeddings])
-
-            except Exception as e:
-                logger.error(f"Embedding batch failed for provider={self.provider} at batch {i}: {e}")
-                raise
+            retries = 3
+            for attempt in range(retries):
+                try:
+                    if self.provider == "openai":
+                        response = await openai.Embedding.acreate(
+                            model=self.model,
+                            input=batch,
+                        )
+                        all_embeddings.extend([item.embedding for item in response.data])
+                    else:
+                        response = self.client.models.embed_content(
+                            model=self.model,
+                            contents=batch,
+                            config=genai_types.EmbedContentConfig(task_type="RETRIEVAL_DOCUMENT"),
+                        )
+                        all_embeddings.extend([emb.values for emb in response.embeddings])
+                    break # Success, exit retry loop
+                except Exception as e:
+                    error_name = type(e).__name__
+                    if error_name == "ClientError" and getattr(e, "code", 500) == 429:
+                        if attempt < retries - 1:
+                            logger.warning(f"Rate limit hit in embedding batch {i}. Sleeping 60s before retry {attempt + 1}/{retries}...")
+                            await asyncio.sleep(60)
+                            continue
+                    logger.error(f"Embedding batch failed for provider={self.provider} at batch {i}: {e}")
+                    raise
 
         logger.info(f"Successfully generated {len(all_embeddings)} embeddings")
         return all_embeddings
