@@ -87,7 +87,15 @@ export default function DocumentLayout() {
               <ArrowLeft className="w-4 h-4" />
             </Link>
             <h2 className="font-semibold text-sm truncate max-w-[200px] sm:max-w-md lg:max-w-full">{document.title}</h2>
-            <span className="badge badge-success text-[10px] hidden sm:inline-flex">Ready</span>
+            {document.status === "ready" && (
+              <span className="badge badge-success text-[10px] hidden sm:inline-flex">Ready</span>
+            )}
+            {document.status === "processing" && (
+              <span className="badge bg-amber-500/10 text-amber-500 text-[10px] hidden sm:inline-flex animate-pulse">Processing...</span>
+            )}
+            {document.status === "failed" && (
+              <span className="badge bg-red-500/10 text-red-500 text-[10px] hidden sm:inline-flex">Failed</span>
+            )}
           </div>
           
           <div className="flex items-center gap-2">
