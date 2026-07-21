@@ -5,9 +5,10 @@ import { motion, type Variants } from "framer-motion";
 
 import { useAuthStore } from "@/context/useAuthStore";
 import { documentsService } from "@/services/documents.service";
+import { dashboardService } from "@/services/dashboard.service";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
-import { formatRelativeDate } from "@/utils/format";
+import { formatRelativeDate, formatActivityAction } from "@/utils/format";
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
@@ -15,6 +16,12 @@ export default function DashboardPage() {
   const { data: documents, isLoading } = useQuery({
     queryKey: ["documents"],
     queryFn: documentsService.list,
+  });
+
+  const { data: dashStats, isLoading: isStatsLoading } = useQuery({
+    queryKey: ["dashboardStats"],
+    queryFn: dashboardService.getStats,
+    refetchInterval: 15000, // Refetch every 15 seconds to keep it real-time
   });
 
   const stats = [
@@ -97,12 +104,12 @@ export default function DashboardPage() {
                     <div>
                       <div className="flex justify-between text-sm mb-1.5">
                         <span className="font-medium">Weekly Goal</span>
-                        <span className="text-[var(--text-secondary)]">75%</span>
+                        <span className="text-[var(--text-secondary)]">{dashStats?.weekly_goal || 0}%</span>
                       </div>
                       <div className="h-3 w-full bg-[var(--bg-base)] rounded-full overflow-hidden border border-[var(--border)]">
                         <motion.div 
                           initial={{ width: 0 }}
-                          animate={{ width: "75%" }}
+                          animate={{ width: `${dashStats?.weekly_goal || 0}%` }}
                           transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
                           className="h-full bg-gradient-to-r from-[var(--brand-from)] to-[var(--brand-to)] rounded-full"
                         />
@@ -110,19 +117,19 @@ export default function DashboardPage() {
                     </div>
                     <div className="grid grid-cols-4 gap-2 text-center pt-2">
                       <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-2">
-                        <p className="text-xl font-bold text-[var(--brand-from)]">12</p>
+                        <p className="text-xl font-bold text-[var(--brand-from)]">{dashStats?.docs_read || 0}</p>
                         <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Docs Read</p>
                       </div>
                       <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-2">
-                        <p className="text-xl font-bold text-emerald-500">85%</p>
+                        <p className="text-xl font-bold text-emerald-500">{dashStats?.quiz_score || 0}%</p>
                         <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Quiz Score</p>
                       </div>
                       <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-2">
-                        <p className="text-xl font-bold text-amber-500">4.5h</p>
+                        <p className="text-xl font-bold text-amber-500">{dashStats?.study_time_hours || 0}h</p>
                         <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Study Time</p>
                       </div>
                       <div className="bg-[var(--bg-base)] border border-[var(--border)] rounded-lg p-2">
-                        <p className="text-xl font-bold text-purple-500">3</p>
+                        <p className="text-xl font-bold text-purple-500">{dashStats?.day_streak || 0}</p>
                         <p className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">Day Streak</p>
                       </div>
                     </div>
@@ -194,34 +201,31 @@ export default function DashboardPage() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-1.5 rounded-md bg-blue-500/10 text-blue-500"><MessageSquare className="w-4 h-4"/></div>
-                      <div>
-                        <p className="text-sm font-medium">Chatted with Biology Ch. 4</p>
-                        <p className="text-xs text-[var(--text-muted)]">2 hours ago</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-1.5 rounded-md bg-emerald-500/10 text-emerald-500"><FileText className="w-4 h-4"/></div>
-                      <div>
-                        <p className="text-sm font-medium">Generated Summary</p>
-                        <p className="text-xs text-[var(--text-muted)]">Yesterday</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-1.5 rounded-md bg-purple-500/10 text-purple-500"><CheckSquare className="w-4 h-4"/></div>
-                      <div>
-                        <p className="text-sm font-medium">Created 15 Q Quiz</p>
-                        <p className="text-xs text-[var(--text-muted)]">Yesterday</p>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <div className="mt-0.5 p-1.5 rounded-md bg-amber-500/10 text-amber-500"><Layers className="w-4 h-4"/></div>
-                      <div>
-                        <p className="text-sm font-medium">Generated 25 Flashcards</p>
-                        <p className="text-xs text-[var(--text-muted)]">3 days ago</p>
-                      </div>
-                    </div>
+                    {isStatsLoading ? (
+                      <div className="text-center text-sm text-[var(--text-muted)] py-4 animate-pulse">Loading activity...</div>
+                    ) : dashStats?.recent_activities && dashStats.recent_activities.length > 0 ? (
+                      dashStats.recent_activities.map((activity) => (
+                        <div key={activity.id} className="flex items-start gap-3">
+                          <div className={`mt-0.5 p-1.5 rounded-md ${
+                            activity.action.includes('chat') ? 'bg-blue-500/10 text-blue-500' :
+                            activity.action.includes('quiz') ? 'bg-purple-500/10 text-purple-500' :
+                            activity.action.includes('flashcard') ? 'bg-amber-500/10 text-amber-500' :
+                            'bg-emerald-500/10 text-emerald-500'
+                          }`}>
+                            {activity.action.includes('chat') ? <MessageSquare className="w-4 h-4"/> :
+                             activity.action.includes('quiz') ? <CheckSquare className="w-4 h-4"/> :
+                             activity.action.includes('flashcard') ? <Layers className="w-4 h-4"/> :
+                             <FileText className="w-4 h-4"/>}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium">{formatActivityAction(activity.action)} {activity.document_title ? <span className="font-normal text-[var(--text-secondary)]">on {activity.document_title}</span> : ''}</p>
+                            <p className="text-xs text-[var(--text-muted)]">{formatRelativeDate(activity.created_at)}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center text-sm text-[var(--text-muted)] py-4">No recent activity</div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -95,6 +95,24 @@ class UpdateProfileRequest(BaseModel):
     full_name: Optional[str] = Field(None, min_length=1, max_length=255)
     avatar_url: Optional[str] = None
 
+class DashboardActivity(BaseModel):
+    id: UUID
+    action: str
+    created_at: datetime
+    document_title: Optional[str] = None
+
+class DashboardStatsResponse(BaseModel):
+    learning_progress: int
+    weekly_goal: int
+    docs_read: int
+    quiz_score: int
+    study_time_hours: float
+    day_streak: int
+    recent_activities: list[DashboardActivity]
+    
+    class Config:
+        from_attributes = True
+
 
 # ── Document Schemas ───────────────────────────────────────────────────────────
 

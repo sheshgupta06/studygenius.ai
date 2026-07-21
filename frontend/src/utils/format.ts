@@ -1,4 +1,4 @@
-import { formatDistanceToNow, format, isToday, isYesterday } from "date-fns";
+import { formatDistanceToNow, format, isToday, isYesterday, differenceInSeconds } from "date-fns";
 
 export function formatFileSize(bytes: number): string {
   if (bytes === 0) return "0 B";
@@ -9,6 +9,11 @@ export function formatFileSize(bytes: number): string {
 
 export function formatRelativeDate(dateString: string): string {
   const date = new Date(dateString);
+  const diffInSeconds = differenceInSeconds(new Date(), date);
+  
+  if (diffInSeconds < 30) return "Just now";
+  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+  
   if (isToday(date)) return formatDistanceToNow(date, { addSuffix: true });
   if (isYesterday(date)) return "Yesterday";
   return format(date, "MMM d, yyyy");
