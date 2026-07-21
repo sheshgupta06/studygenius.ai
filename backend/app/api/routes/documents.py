@@ -26,8 +26,8 @@ logger = logging.getLogger(__name__)
 settings = get_settings()
 router = APIRouter()
 
-# Local uploads directory inside the container
-UPLOADS_DIR = Path("/app/uploads")
+# Local uploads directory inside the container or project folder
+UPLOADS_DIR = Path("uploads")
 UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
 
 
