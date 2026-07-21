@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { useAuthStore } from "@/context/useAuthStore";
 import { useState } from "react";
 import { cn } from "@/utils/cn";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 
 // FAQ Component
 function FaqItem({ question, answer }: { question: string, answer: string }) {
@@ -43,7 +43,7 @@ function FaqItem({ question, answer }: { question: string, answer: string }) {
 export default function LandingPage() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
 
-  const staggerContainer = {
+  const staggerContainer: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -51,12 +51,12 @@ export default function LandingPage() {
     }
   };
 
-  const fadeUp = {
+  const fadeUp: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
 
-  const scaleIn = {
+  const scaleIn: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     show: { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
