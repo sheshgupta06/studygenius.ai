@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { FileText, Plus, BrainCircuit, History, CheckSquare, MessageSquare, Layers, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 
 import { useAuthStore } from "@/context/useAuthStore";
 import { documentsService } from "@/services/documents.service";
@@ -23,7 +23,7 @@ export default function DashboardPage() {
     { title: "Plan Status", value: user?.plan.toUpperCase() || "FREE", icon: History, color: "text-emerald-500" },
   ];
 
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
@@ -33,7 +33,7 @@ export default function DashboardPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 300, damping: 24 } }
   };
